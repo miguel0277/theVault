@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Record {
+  id             String   @id @default(cuid())
+  title          String
+  artist         String
+  year           Int?
+  label          String?
+  catalogNumber  String?
+  genre          String[] @default([])
+  condition      String   @default("VG")
+  coverArt       String?
+  spotifyAlbumId String?
+  spotifyUrl     String?
+  sideATracks    Json?
+  sideBTracks    Json?
+  producer       String?
+  studios        String[] @default([])
+  country        String?
+  pressingInfo   String?
+  funFacts       String[] @default([])
+  credits        Json?
+  similarAlbums  String[] @default([])
+  userNotes      String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model SpotifyToken {
+  id           String   @id @default("default")
+  accessToken  String
+  refreshToken String
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

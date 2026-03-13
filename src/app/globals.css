@@ -1,26 +1,171 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --burgundy: #1a0a0a;
+  --charcoal: #1c1917;
+  --charcoal-light: #292524;
+  --parchment: #f5e6c8;
+  --parchment-dim: #d4c4a0;
+  --gold: #c9a84c;
+  --gold-dim: #a88a3a;
+  --amber: #b45309;
+  --cream: #fef3e2;
+  --rust: #9a3412;
+  --blood: #7f1d1d;
+
+  --background: #120808;
+  --foreground: #f5e6c8;
+  --card: #1c1917;
+  --card-hover: #292524;
+  --border: #3d2f2a;
+  --border-strong: #c9a84c;
+  --muted: #78716c;
+  --muted-foreground: #a8a29e;
+
+  --font-display: "Playfair Display", serif;
+  --font-body: "Courier Prime", monospace;
+  --font-label: "Bebas Neue", sans-serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-hover: var(--card-hover);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-burgundy: var(--burgundy);
+  --color-charcoal: var(--charcoal);
+  --color-charcoal-light: var(--charcoal-light);
+  --color-parchment: var(--parchment);
+  --color-parchment-dim: var(--parchment-dim);
+  --color-gold: var(--gold);
+  --color-gold-dim: var(--gold-dim);
+  --color-amber: var(--amber);
+  --color-cream: var(--cream);
+  --color-rust: var(--rust);
+  --color-blood: var(--blood);
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-label: var(--font-label);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Grain overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: radial-gradient(ellipse at 50% 30%, #1a0a0a 0%, #120808 50%, #0a0404 100%);
+  color: var(--parchment);
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+/* Typography */
+h1, h2, h3 {
+  font-family: var(--font-display);
+  color: var(--parchment);
+}
+
+/* Double-rule border utility */
+.border-double-rule {
+  border: 3px double var(--border);
+}
+
+/* Vinyl spin animation */
+@keyframes spin-vinyl {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-vinyl {
+  animation: spin-vinyl 2s linear infinite;
+}
+
+.animate-spin-vinyl-slow {
+  animation: spin-vinyl 4s linear infinite;
+}
+
+/* Needle drop animation */
+@keyframes needle-drop {
+  0% { transform: rotate(-30deg); transform-origin: top right; }
+  100% { transform: rotate(0deg); transform-origin: top right; }
+}
+
+.animate-needle-drop {
+  animation: needle-drop 1s ease-out forwards;
+}
+
+/* Card lift on hover */
+@keyframes card-lift {
+  from { transform: translateY(0) scale(1); }
+  to { transform: translateY(-8px) scale(1.02); }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--charcoal);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-dim);
+}
+
+/* Selection */
+::selection {
+  background: var(--gold);
+  color: var(--burgundy);
+}
+
+/* Vintage separator */
+.vintage-separator {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--gold-dim);
+  font-family: var(--font-label);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+.vintage-separator::before,
+.vintage-separator::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border), transparent);
+}
+
+/* Worn edge clip path */
+.worn-edge {
+  clip-path: polygon(
+    0% 2%, 3% 0%, 7% 1%, 12% 0%, 18% 2%, 24% 0%, 30% 1%, 36% 0%,
+    42% 2%, 48% 0%, 54% 1%, 60% 0%, 66% 2%, 72% 0%, 78% 1%, 84% 0%,
+    90% 2%, 95% 0%, 100% 1%,
+    100% 98%, 97% 100%, 93% 99%, 88% 100%, 82% 98%, 76% 100%, 70% 99%,
+    64% 100%, 58% 98%, 52% 100%, 46% 99%, 40% 100%, 34% 98%, 28% 100%,
+    22% 99%, 16% 100%, 10% 98%, 5% 100%, 0% 99%
+  );
 }
