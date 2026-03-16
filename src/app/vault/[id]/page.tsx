@@ -9,8 +9,6 @@ import {
   ArrowLeft,
   Edit3,
   Trash2,
-  ExternalLink,
-  Music,
   MapPin,
   Building,
   User,
@@ -420,12 +418,12 @@ export default function RecordDetailPage() {
               href={record.spotifyUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 bg-green-900/20 border border-green-700/30 rounded text-green-400 text-sm hover:bg-green-900/30 transition-colors"
-              style={{ fontFamily: "var(--font-body)" }}
+              title="Abrir en Spotify"
+              className="flex items-center justify-center w-10 h-10 bg-green-900/20 border border-green-700/30 rounded-full hover:bg-green-900/40 transition-colors"
             >
-              <Music className="w-4 h-4" />
-              Abrir en Spotify
-              <ExternalLink className="w-3 h-3" />
+              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-[#1DB954]" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.516 17.318a.75.75 0 0 1-1.032.25c-2.828-1.728-6.39-2.118-10.584-1.16a.75.75 0 0 1-.336-1.462c4.59-1.05 8.523-.598 11.702 1.34a.75.75 0 0 1 .25 1.032zm1.472-3.277a.937.937 0 0 1-1.288.308c-3.236-1.99-8.166-2.567-11.993-1.405a.937.937 0 0 1-.578-1.786c4.376-1.336 9.815-.688 13.551 1.595a.937.937 0 0 1 .308 1.288zm.127-3.41C15.29 8.539 9.265 8.34 5.8 9.4a1.125 1.125 0 0 1-.652-2.15c4.01-1.217 10.68-.983 14.894 1.538a1.125 1.125 0 0 1-1.127 1.943z"/>
+              </svg>
             </a>
           )}
         </div>
