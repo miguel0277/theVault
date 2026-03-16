@@ -45,7 +45,7 @@ export async function enrichRecord(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.2, maxOutputTokens: 2048 },
+        generationConfig: { temperature: 0.2, maxOutputTokens: 8192 },
       }),
     }
   );
@@ -59,7 +59,14 @@ export async function enrichRecord(
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
   // Strip markdown code fences if present
-  const cleaned = text.replace(/```json\s*\n?/g, "").replace(/```\s*$/g, "").trim();
+  let cleaned = text.replace(/```json\s*\n?/g, "").replace(/```\s*$/g, "").trim();
+
+  // Extract only the JSON object (from first { to last })
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
+  if (start !== -1 && end !== -1) {
+    cleaned = cleaned.slice(start, end + 1);
+  }
 
   return JSON.parse(cleaned) as EnrichedRecord;
 }
