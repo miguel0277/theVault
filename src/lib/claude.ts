@@ -39,7 +39,7 @@ export async function enrichRecord(
   const prompt = `You are a vinyl record expert and music historian. Given the album info provided, return a JSON object with: full_title, artist, year, label, catalog_number, genre (array), side_a_tracks (array of {position, title, duration}), side_b_tracks (same), producer, recording_studios (array), release_country, pressing_info, fun_facts (array of 3-5 fascinating facts about the recording, production, or cultural impact), personnel_credits (array of {name, role}), recommended_if_you_like (array of 3 similar albums as strings like 'Artist - Album'). Be specific and historically accurate. Return ONLY valid JSON, no markdown formatting.\n\n${userMessage}`;
 
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
