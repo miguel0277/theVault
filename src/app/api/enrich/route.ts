@@ -22,9 +22,10 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(enriched);
   } catch (error) {
-    console.error("Enrichment error:", error);
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("Enrichment error:", msg);
     return NextResponse.json(
-      { error: "Failed to enrich record. Check your API key." },
+      { error: msg },
       { status: 500 }
     );
   }

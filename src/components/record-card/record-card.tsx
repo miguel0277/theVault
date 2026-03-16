@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ExternalLink, Search } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 import { VinylSpinner } from "@/components/vinyl-spinner/vinyl-spinner";
 import { CONDITIONS } from "@/lib/utils";
@@ -25,9 +25,11 @@ export function RecordCard({ record }: RecordCardProps) {
   const genres = record.genre;
   const conditionInfo = CONDITIONS[record.condition] || CONDITIONS["VG"];
 
+  // Always search on Spotify — open the album if linked, otherwise search
   const searchUrl = record.spotifyUrl
     ? record.spotifyUrl
-    : `https://www.google.com/search?q=${encodeURIComponent(`${record.artist} ${record.title} vinyl`)}`;
+    : `https://open.spotify.com/search/${encodeURIComponent(`${record.artist} ${record.title}`)}`;
+
 
   return (
     <div className="relative flex flex-col">
@@ -139,13 +141,9 @@ export function RecordCard({ record }: RecordCardProps) {
         rel="noopener noreferrer"
         onClick={(e) => e.stopPropagation()}
         className="absolute bottom-4 right-4 p-1.5 rounded-full bg-charcoal border border-border text-muted-foreground hover:text-gold hover:border-gold/40 transition-colors z-10"
-        title={record.spotifyUrl ? "Open in Spotify" : "Search on Google"}
+        title={record.spotifyUrl ? "Open in Spotify" : "Search on Spotify"}
       >
-        {record.spotifyUrl ? (
-          <ExternalLink className="w-3.5 h-3.5 text-green-400" />
-        ) : (
-          <Search className="w-3.5 h-3.5" />
-        )}
+        <ExternalLink className="w-3.5 h-3.5 text-green-400" />
       </a>
     </div>
   );
