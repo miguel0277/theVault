@@ -178,8 +178,11 @@ export default function AddRecordPage() {
 
   async function handleSaveBasic() {
     if (!formValues) return;
-    setIsSubmitting(true);
+    await handleSaveBasicWithData(formValues);
+  }
 
+  async function handleSaveBasicWithData(data: AddRecordForm) {
+    setIsSubmitting(true);
     try {
       const uploadedCoverUrl = await uploadCover();
 
@@ -187,14 +190,14 @@ export default function AddRecordPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: formValues.title,
-          artist: formValues.artist,
-          year: formValues.year && !isNaN(formValues.year) ? formValues.year : null,
-          label: formValues.label || null,
-          catalogNumber: formValues.catalogNumber || null,
-          condition: formValues.condition,
+          title: data.title,
+          artist: data.artist,
+          year: data.year && !isNaN(data.year) ? data.year : null,
+          label: data.label || null,
+          catalogNumber: data.catalogNumber || null,
+          condition: data.condition,
           coverArt: uploadedCoverUrl || null,
-          userNotes: formValues.userNotes || null,
+          userNotes: data.userNotes || null,
         }),
       });
 
@@ -428,15 +431,30 @@ export default function AddRecordPage() {
                 />
               </div>
 
-              {/* Submit */}
-              <button
-                type="submit"
-                className="flex items-center gap-3 px-8 py-3 bg-gold/15 border-2 border-gold/40 rounded-lg text-gold hover:bg-gold/25 hover:border-gold/60 transition-all"
-                style={{ fontFamily: "var(--font-label)", letterSpacing: "0.1em" }}
-              >
-                <Sparkles className="w-5 h-5" />
-                ENRICH WITH AI & ADD
-              </button>
+              {/* Submit buttons */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  type="submit"
+                  className="flex items-center justify-center gap-3 px-8 py-3 bg-gold/15 border-2 border-gold/40 rounded-lg text-gold hover:bg-gold/25 hover:border-gold/60 transition-all"
+                  style={{ fontFamily: "var(--font-label)", letterSpacing: "0.1em" }}
+                >
+                  <Sparkles className="w-5 h-5" />
+                  ENRICH WITH AI & ADD
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSubmit(async (data) => {
+                    setFormValues(data);
+                    await handleSaveBasicWithData(data);
+                  })}
+                  disabled={isSubmitting || uploadingCover}
+                  className="flex items-center justify-center gap-2 px-8 py-3 bg-charcoal border border-border rounded-lg text-muted-foreground hover:text-parchment hover:border-border/80 transition-all disabled:opacity-50"
+                  style={{ fontFamily: "var(--font-label)", letterSpacing: "0.1em" }}
+                >
+                  {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                  SAVE WITHOUT AI
+                </button>
+              </div>
             </form>
           </motion.div>
         )}
