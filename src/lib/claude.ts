@@ -36,7 +36,7 @@ export async function enrichRecord(
     .filter(Boolean)
     .join("\n");
 
-  const prompt = `You are a vinyl record expert and music historian. Given the album info provided, return a JSON object with: full_title, artist, year, label, catalog_number, genre (array), side_a_tracks (array of {position, title, duration}), side_b_tracks (same), producer, recording_studios (array), release_country, pressing_info, fun_facts (array of 3-5 fascinating facts about the recording, production, or cultural impact), personnel_credits (array of {name, role}), recommended_if_you_like (array of 3 similar albums as strings like 'Artist - Album'). Be specific and historically accurate. Return ONLY valid JSON, no markdown formatting.\n\n${userMessage}`;
+  const prompt = `Eres un experto en discos de vinilo e historiador musical. Con la información del álbum proporcionada, devuelve un objeto JSON con: full_title, artist, year, label, catalog_number, genre (array en español, ej: "Rock", "Jazz", "Salsa"), side_a_tracks (array de {position, title, duration}), side_b_tracks (igual), producer, recording_studios (array), release_country (en español, ej: "Estados Unidos"), pressing_info (en español), fun_facts (array de 3-5 datos fascinantes en español sobre la grabación, producción o impacto cultural), personnel_credits (array de {name, role} con el rol en español, ej: "Guitarra", "Bajo", "Productor"), recommended_if_you_like (array de 3 álbumes similares como "Artista - Álbum"). Sé específico y históricamente preciso. Devuelve ÚNICAMENTE JSON válido, sin formato markdown.\n\n${userMessage}`;
 
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
