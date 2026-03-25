@@ -5,11 +5,12 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Sparkles, ArrowLeft, ImagePlus, X } from "lucide-react";
+import { Loader2, ArrowLeft, ImagePlus, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { EnrichmentReview } from "@/components/ai-enrichment/enrichment-review";
+import { ModelSelector } from "@/components/ai-enrichment/model-selector";
 import type { EnrichedRecord } from "@/lib/claude";
 import { CONDITIONS } from "@/lib/utils";
 
@@ -83,7 +84,7 @@ export default function AddRecordPage() {
     defaultValues: { condition: "VG" },
   });
 
-  async function onSubmit(data: AddRecordForm) {
+  async function onSubmitWithModel(data: AddRecordForm, modelId: string) {
     setFormValues(data);
     setStep("enriching");
     setEnrichError(null);
@@ -98,10 +99,15 @@ export default function AddRecordPage() {
           year: data.year && !isNaN(data.year) ? data.year : undefined,
           label: data.label || undefined,
           catalogNumber: data.catalogNumber || undefined,
+          model: modelId,
         }),
       });
 
       if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        if (errorData.quotaExhausted) {
+          throw new Error("QUOTA_EXHAUSTED");
+        }
         throw new Error("Enrichment failed");
       }
 
@@ -109,11 +115,22 @@ export default function AddRecordPage() {
       setEnrichedData(enriched);
       setStep("review");
     } catch (err) {
-      setEnrichError(
-        "AI enrichment failed. You can save with basic info or try again."
-      );
+      const msg = err instanceof Error ? err.message : "";
+      if (msg === "QUOTA_EXHAUSTED") {
+        setEnrichError(
+          "Los tokens de este modelo se agotaron. Selecciona otro modelo e intenta de nuevo."
+        );
+      } else {
+        setEnrichError(
+          "AI enrichment failed. You can save with basic info or try again."
+        );
+      }
       setStep("input");
     }
+  }
+
+  function handleEnrichWithModel(modelId: string) {
+    handleSubmit((data) => onSubmitWithModel(data, modelId))();
   }
 
   async function handleConfirm(data: EnrichedRecord) {
@@ -254,7 +271,7 @@ export default function AddRecordPage() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Artist */}
                 <div>
@@ -433,14 +450,10 @@ export default function AddRecordPage() {
 
               {/* Submit buttons */}
               <div className="flex flex-col sm:flex-row gap-3">
-                <button
-                  type="submit"
-                  className="flex items-center justify-center gap-3 px-8 py-3 bg-gold/15 border-2 border-gold/40 rounded-lg text-gold hover:bg-gold/25 hover:border-gold/60 transition-all"
-                  style={{ fontFamily: "var(--font-label)", letterSpacing: "0.1em" }}
-                >
-                  <Sparkles className="w-5 h-5" />
-                  ENRICH WITH AI & ADD
-                </button>
+                <ModelSelector
+                  onEnrich={handleEnrichWithModel}
+                  disabled={isSubmitting || uploadingCover}
+                />
                 <button
                   type="button"
                   onClick={handleSubmit(async (data) => {

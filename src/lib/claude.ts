@@ -21,7 +21,8 @@ export async function enrichRecord(
   title: string,
   year?: number | null,
   label?: string | null,
-  catalogNumber?: string | null
+  catalogNumber?: string | null,
+  modelEndpoint: string = "gemini-2.5-flash"
 ): Promise<EnrichedRecord> {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error("GEMINI_API_KEY is not set");
@@ -39,7 +40,7 @@ export async function enrichRecord(
   const prompt = `Eres un experto en discos de vinilo e historiador musical. Con la información del álbum proporcionada, devuelve un objeto JSON con: full_title, artist, year, label, catalog_number, genre (array en español, ej: "Rock", "Jazz", "Salsa"), side_a_tracks (array de {position, title, duration}), side_b_tracks (igual), producer, recording_studios (array), release_country (en español, ej: "Estados Unidos"), pressing_info (en español), fun_facts (array de 3-5 datos fascinantes en español sobre la grabación, producción o impacto cultural), personnel_credits (array de {name, role} con el rol en español, ej: "Guitarra", "Bajo", "Productor"), recommended_if_you_like (array de 3 álbumes similares como "Artista - Álbum"). Sé específico y históricamente preciso. Devuelve ÚNICAMENTE JSON válido, sin formato markdown.\n\n${userMessage}`;
 
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${modelEndpoint}:generateContent?key=${apiKey}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
